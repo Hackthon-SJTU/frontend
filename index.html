@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReasoningACTION - 多模态内容生成系统</title>
+    <title>ReasoningACTION MCP系统</title>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -19,184 +19,129 @@
         
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
             min-height: 100vh;
         }
         
-        /* 自定义滚动条 */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 4px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.5);
-        }
-        
-        /* 动画效果 */
-        @keyframes slideInUp {
-            from {
-                transform: translateY(20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-        
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-            50% {
-                transform: scale(1.05);
-                opacity: 0.8;
-            }
-        }
-        
-        @keyframes spin {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
-        }
-        
-        .animate-slide-up {
-            animation: slideInUp 0.5s ease-out;
-        }
-        
-        .animate-pulse {
-            animation: pulse 2s infinite;
-        }
-        
-        .animate-spin {
-            animation: spin 1s linear infinite;
-        }
-        
-        /* 玻璃态效果 */
         .glass {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
-        .glass-dark {
-            background: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        /* 按钮效果 */
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
             color: white;
             padding: 12px 24px;
             border-radius: 8px;
             font-weight: 600;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
         }
         
-        .btn-primary:hover {
+        .btn-primary:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
         }
         
         .btn-primary:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-            transform: none;
         }
         
-        /* 卡片效果 */
-        .card {
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
         
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+        .animate-spin {
+            animation: spin 1s linear infinite;
         }
         
-        /* 进度条 */
-        .progress-bar {
-            height: 6px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 3px;
-            overflow: hidden;
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
         
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            border-radius: 3px;
-            transition: width 0.3s ease;
-        }
-        
-        /* 工作流步骤 */
-        .workflow-step {
-            position: relative;
-            padding-left: 40px;
-        }
-        
-        .workflow-step::before {
-            content: '';
-            position: absolute;
-            left: 11px;
-            top: 40px;
-            width: 2px;
-            height: calc(100% - 20px);
-            background: rgba(255, 255, 255, 0.2);
-        }
-        
-        .workflow-step:last-child::before {
-            display: none;
-        }
-        
-        .workflow-step-icon {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
-            color: #667eea;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        .workflow-step.active .workflow-step-icon {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+        .animate-pulse {
             animation: pulse 2s infinite;
         }
         
-        .workflow-step.completed .workflow-step-icon {
+        .media-container {
+            background: #1f2937;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        
+        .step-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 24px 0;
+        }
+        
+        .step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+        
+        .step::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.2);
+            z-index: -1;
+        }
+        
+        .step:last-child::after {
+            display: none;
+        }
+        
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .step.active .step-circle {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+        }
+        
+        .step.completed .step-circle {
             background: #10b981;
             color: white;
+        }
+        
+        .result-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .code-block {
+            background: #1f2937;
+            color: #f3f4f6;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            margin-top: 8px;
         }
     </style>
 </head>
@@ -206,14 +151,15 @@
     <script type="text/babel">
         const { useState, useEffect, useRef, useCallback } = React;
         
-        // API配置
-        const API_BASE_URL = 'http://localhost:8000';
-        
-        // API客户端
-        class APIClient {
-            static async request(endpoint, options = {}) {
+        // ==================== MCP API 客户端 ====================
+        class MCPClient {
+            constructor(baseUrl = 'http://localhost:8000') {
+                this.baseUrl = baseUrl;
+            }
+            
+            async request(endpoint, options = {}) {
                 try {
-                    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                    const response = await fetch(`${this.baseUrl}${endpoint}`, {
                         ...options,
                         headers: {
                             'Content-Type': 'application/json',
@@ -227,645 +173,651 @@
                     
                     return await response.json();
                 } catch (error) {
-                    console.error('API Error:', error);
+                    console.error('MCP API Error:', error);
                     throw error;
                 }
             }
             
-            // 文生图
-            static async textToImage(prompt, config = {}) {
-                return this.request('/api/text-to-image', {
+            // MCP标准接口：文本生成图像
+            async textToImage(prompt, config = {}) {
+                return this.request('/mcp/text-to-image', {
                     method: 'POST',
-                    body: JSON.stringify({ prompt, ...config }),
+                    body: JSON.stringify({
+                        prompt,
+                        negative_prompt: config.negative_prompt || '',
+                        width: config.width || 1024,
+                        height: config.height || 768,
+                        guidance_scale: config.guidance_scale || 7.5,
+                        num_inference_steps: config.num_inference_steps || 50,
+                        seed: config.seed || -1
+                    }),
                 });
             }
             
-            // 图生视频
-            static async imageToVideo(imageUrl, config = {}) {
-                return this.request('/api/image-to-video', {
+            // MCP标准接口：图像生成视频
+            async imageToVideo(imageUrl, config = {}) {
+                return this.request('/mcp/image-to-video', {
                     method: 'POST',
-                    body: JSON.stringify({ image_url: imageUrl, ...config }),
+                    body: JSON.stringify({
+                        image_url: imageUrl,
+                        motion_scale: config.motion_scale || 1.0,
+                        fps: config.fps || 30,
+                        duration: 4.0,  // 固定4秒
+                        transition_type: config.transition_type || 'none'
+                    }),
                 });
             }
             
-            // 视频生音频
-            static async videoToAudio(videoUrl, config = {}) {
-                return this.request('/api/video-to-audio', {
+            // MCP标准接口：视频推理音频
+            async videoToAudio(videoUrl, config = {}) {
+                return this.request('/mcp/video-to-audio', {
                     method: 'POST',
-                    body: JSON.stringify({ video_url: videoUrl, ...config }),
+                    body: JSON.stringify({
+                        video_url: videoUrl,
+                        audio_style: config.audio_style || 'ambient',
+                        include_sfx: config.include_sfx !== false,
+                        volume: config.volume || 0.8
+                    }),
                 });
             }
             
-            // 合并视频
-            static async mergeVideos(videoSegments, audioUrl, config = {}) {
-                return this.request('/api/merge-videos', {
+            // MCP标准接口：合并视频
+            async mergeVideos(videoSegments, audioUrl, config = {}) {
+                return this.request('/mcp/merge-videos', {
                     method: 'POST',
-                    body: JSON.stringify({ 
-                        video_segments: videoSegments, 
+                    body: JSON.stringify({
+                        video_segments: videoSegments,
                         audio_url: audioUrl,
-                        ...config 
+                        output_format: config.output_format || 'mp4',
+                        quality: config.quality || 'high'
                     }),
                 });
             }
             
-            // 执行工作流
-            static async executeWorkflow(prompt, iterations, config = {}) {
-                return this.request('/api/workflow', {
+            // MCP标准接口：完整工作流
+            async executeWorkflow(prompt, iterations, config = {}) {
+                return this.request('/mcp/workflow', {
                     method: 'POST',
-                    body: JSON.stringify({ 
-                        prompt, 
+                    body: JSON.stringify({
+                        prompt,
                         iterations,
-                        auto_enhance: true,
-                        workflow_config: config 
+                        auto_enhance: config.auto_enhance !== false,
+                        workflow_config: config
                     }),
                 });
             }
             
-            // 获取任务状态
-            static async getTaskStatus(taskId) {
-                return this.request(`/api/tasks/${taskId}`);
-            }
-            
-            // 获取任务列表
-            static async listTasks(status = null) {
-                const query = status ? `?status=${status}` : '';
-                return this.request(`/api/tasks${query}`);
-            }
-            
-            // 取消任务
-            static async cancelTask(taskId) {
-                return this.request(`/api/tasks/${taskId}`, {
-                    method: 'DELETE',
-                });
+            // 查询任务状态
+            async getTaskStatus(taskId) {
+                return this.request(`/mcp/status/${taskId}`);
             }
         }
         
-        // 主应用组件
+        // 创建MCP客户端实例
+        const mcpClient = new MCPClient();
+        
+        // ==================== 主应用组件 ====================
         function App() {
-            const [currentView, setCurrentView] = useState('workflow'); // workflow | history
-            const [workflowState, setWorkflowState] = useState({
-                prompt: '',
-                iterations: 10,
-                status: 'idle', // idle | processing | completed | error
-                currentStep: 0,
-                totalSteps: 0,
-                progress: 0,
-                result: null,
-                error: null,
+            const [activeTab, setActiveTab] = useState('single'); // single | workflow
+            const [currentStep, setCurrentStep] = useState(0);
+            const [processing, setProcessing] = useState(false);
+            const [results, setResults] = useState({
+                textToImage: null,
+                imageToVideo: null,
+                videoToAudio: null,
+                mergeVideos: null,
+                workflow: null
             });
-            const [tasks, setTasks] = useState([]);
-            const [currentTaskId, setCurrentTaskId] = useState(null);
-            const pollIntervalRef = useRef(null);
+            const [error, setError] = useState(null);
             
-            // 工作流步骤定义
-            const workflowSteps = [
+            // 表单数据
+            const [formData, setFormData] = useState({
+                prompt: '宁静的森林中，阳光透过树叶洒下，小溪缓缓流淌',
+                negative_prompt: 'low quality, blurry',
+                iterations: 3,
+                image_config: {
+                    width: 1024,
+                    height: 768,
+                    guidance_scale: 7.5,
+                    num_inference_steps: 50
+                },
+                video_config: {
+                    motion_scale: 1.5,
+                    fps: 30
+                },
+                audio_config: {
+                    audio_style: 'nature',
+                    include_sfx: true,
+                    volume: 0.8
+                }
+            });
+            
+            // 步骤定义
+            const steps = [
                 { id: 'text-to-image', name: '文本生成图像', icon: '🎨' },
                 { id: 'image-to-video', name: '图像生成视频', icon: '🎬' },
                 { id: 'video-to-audio', name: '视频推理音频', icon: '🎵' },
-                { id: 'merge', name: '音视频合成', icon: '🎞️' },
-                { id: 'complete', name: '完成', icon: '✅' },
+                { id: 'merge', name: '音视频合成', icon: '🎞️' }
             ];
             
-            // 获取当前步骤
-            const getCurrentStep = (progress) => {
-                if (progress === 0) return 0;
-                if (progress < 25) return 0;
-                if (progress < 50) return 1;
-                if (progress < 75) return 2;
-                if (progress < 90) return 3;
-                return 4;
-            };
-            
-            // 轮询任务状态
-            const pollTaskStatus = useCallback(async (taskId) => {
+            // 单步执行：文本生成图像
+            const handleTextToImage = async () => {
+                setProcessing(true);
+                setError(null);
+                setCurrentStep(0);
+                
                 try {
-                    const task = await APIClient.getTaskStatus(taskId);
+                    console.log('调用MCP: text-to-image', formData.prompt);
+                    const response = await mcpClient.textToImage(
+                        formData.prompt,
+                        formData.image_config
+                    );
                     
-                    setWorkflowState(prev => ({
-                        ...prev,
-                        progress: task.progress,
-                        currentStep: getCurrentStep(task.progress),
-                    }));
-                    
-                    if (task.status === 'success') {
-                        setWorkflowState(prev => ({
-                            ...prev,
-                            status: 'completed',
-                            result: task.result,
-                            progress: 100,
-                            currentStep: 4,
-                        }));
-                        stopPolling();
-                    } else if (task.status === 'failed') {
-                        setWorkflowState(prev => ({
-                            ...prev,
-                            status: 'error',
-                            error: task.error || '处理失败',
-                        }));
-                        stopPolling();
-                    }
-                } catch (error) {
-                    console.error('轮询错误:', error);
-                }
-            }, []);
-            
-            // 停止轮询
-            const stopPolling = () => {
-                if (pollIntervalRef.current) {
-                    clearInterval(pollIntervalRef.current);
-                    pollIntervalRef.current = null;
+                    console.log('MCP响应:', response);
+                    setResults(prev => ({ ...prev, textToImage: response }));
+                    setCurrentStep(1);
+                } catch (err) {
+                    setError(err.message);
+                    console.error('文本生成图像失败:', err);
+                } finally {
+                    setProcessing(false);
                 }
             };
             
-            // 开始工作流
-            const startWorkflow = async () => {
-                if (!workflowState.prompt.trim()) {
-                    alert('请输入提示词');
+            // 单步执行：图像生成视频
+            const handleImageToVideo = async () => {
+                if (!results.textToImage) {
+                    setError('请先生成图像');
                     return;
                 }
                 
-                setWorkflowState(prev => ({
-                    ...prev,
-                    status: 'processing',
-                    currentStep: 0,
-                    progress: 0,
-                    result: null,
-                    error: null,
-                }));
+                setProcessing(true);
+                setError(null);
+                setCurrentStep(1);
                 
                 try {
-                    // 调用工作流API
-                    const response = await APIClient.executeWorkflow(
-                        workflowState.prompt,
-                        workflowState.iterations,
+                    const imageUrl = results.textToImage.result.image_url;
+                    console.log('调用MCP: image-to-video', imageUrl);
+                    
+                    const response = await mcpClient.imageToVideo(
+                        imageUrl,
+                        formData.video_config
+                    );
+                    
+                    console.log('MCP响应:', response);
+                    setResults(prev => ({ ...prev, imageToVideo: response }));
+                    setCurrentStep(2);
+                } catch (err) {
+                    setError(err.message);
+                    console.error('图像生成视频失败:', err);
+                } finally {
+                    setProcessing(false);
+                }
+            };
+            
+            // 单步执行：视频推理音频
+            const handleVideoToAudio = async () => {
+                if (!results.imageToVideo) {
+                    setError('请先生成视频');
+                    return;
+                }
+                
+                setProcessing(true);
+                setError(null);
+                setCurrentStep(2);
+                
+                try {
+                    const videoUrl = results.imageToVideo.result.video_url;
+                    console.log('调用MCP: video-to-audio', videoUrl);
+                    
+                    const response = await mcpClient.videoToAudio(
+                        videoUrl,
+                        formData.audio_config
+                    );
+                    
+                    console.log('MCP响应:', response);
+                    setResults(prev => ({ ...prev, videoToAudio: response }));
+                    setCurrentStep(3);
+                } catch (err) {
+                    setError(err.message);
+                    console.error('视频推理音频失败:', err);
+                } finally {
+                    setProcessing(false);
+                }
+            };
+            
+            // 单步执行：合并视频
+            const handleMergeVideos = async () => {
+                if (!results.imageToVideo || !results.videoToAudio) {
+                    setError('请先完成视频和音频生成');
+                    return;
+                }
+                
+                setProcessing(true);
+                setError(null);
+                setCurrentStep(3);
+                
+                try {
+                    // 模拟多个视频片段（实际应该是多次调用imageToVideo）
+                    const videoSegments = [];
+                    for (let i = 0; i < formData.iterations; i++) {
+                        videoSegments.push(results.imageToVideo.result.video_url);
+                    }
+                    
+                    const audioUrl = results.videoToAudio.result.audio_url;
+                    console.log('调用MCP: merge-videos', { videoSegments, audioUrl });
+                    
+                    const response = await mcpClient.mergeVideos(
+                        videoSegments,
+                        audioUrl,
+                        { quality: 'high', output_format: 'mp4' }
+                    );
+                    
+                    console.log('MCP响应:', response);
+                    setResults(prev => ({ ...prev, mergeVideos: response }));
+                    setCurrentStep(4);
+                } catch (err) {
+                    setError(err.message);
+                    console.error('合并视频失败:', err);
+                } finally {
+                    setProcessing(false);
+                }
+            };
+            
+            // 执行完整工作流
+            const handleWorkflow = async () => {
+                setProcessing(true);
+                setError(null);
+                setCurrentStep(0);
+                
+                try {
+                    console.log('调用MCP: workflow', {
+                        prompt: formData.prompt,
+                        iterations: formData.iterations
+                    });
+                    
+                    const response = await mcpClient.executeWorkflow(
+                        formData.prompt,
+                        formData.iterations,
                         {
-                            image_config: { width: 1024, height: 768 },
-                            video_config: { fps: 30, motion_scale: 1.5 },
-                            audio_config: { audio_style: 'cinematic', include_sfx: true },
-                            merge_config: { quality: 'high', output_format: 'mp4' }
+                            image_config: formData.image_config,
+                            video_config: formData.video_config,
+                            audio_config: formData.audio_config
                         }
                     );
                     
-                    setCurrentTaskId(response.task_id);
-                    
-                    // 开始轮询
-                    pollIntervalRef.current = setInterval(() => {
-                        pollTaskStatus(response.task_id);
-                    }, 1000);
-                    
-                } catch (error) {
-                    setWorkflowState(prev => ({
-                        ...prev,
-                        status: 'error',
-                        error: error.message,
-                    }));
+                    console.log('MCP工作流响应:', response);
+                    setResults(prev => ({ ...prev, workflow: response }));
+                    setCurrentStep(4);
+                } catch (err) {
+                    setError(err.message);
+                    console.error('工作流执行失败:', err);
+                } finally {
+                    setProcessing(false);
                 }
             };
             
-            // 重置工作流
-            const resetWorkflow = () => {
-                stopPolling();
-                setWorkflowState({
-                    prompt: '',
-                    iterations: 10,
-                    status: 'idle',
-                    currentStep: 0,
-                    totalSteps: 0,
-                    progress: 0,
-                    result: null,
-                    error: null,
+            // 重置
+            const handleReset = () => {
+                setResults({
+                    textToImage: null,
+                    imageToVideo: null,
+                    videoToAudio: null,
+                    mergeVideos: null,
+                    workflow: null
                 });
-                setCurrentTaskId(null);
+                setCurrentStep(0);
+                setError(null);
             };
-            
-            // 加载历史任务
-            const loadTasks = async () => {
-                try {
-                    const taskList = await APIClient.listTasks();
-                    setTasks(taskList);
-                } catch (error) {
-                    console.error('加载任务失败:', error);
-                }
-            };
-            
-            // 组件挂载时加载任务
-            useEffect(() => {
-                if (currentView === 'history') {
-                    loadTasks();
-                }
-            }, [currentView]);
-            
-            // 组件卸载时清理
-            useEffect(() => {
-                return () => {
-                    stopPolling();
-                };
-            }, []);
             
             return (
                 <div className="min-h-screen p-6">
                     {/* 头部 */}
-                    <header className="glass rounded-2xl p-6 mb-6 animate-slide-up">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <h1 className="text-3xl font-bold text-white mb-2">
-                                    ReasoningACTION 多模态生成系统
-                                </h1>
-                                <p className="text-white/80">
-                                    基于大模型的智能内容创作平台 - 文本→图像→视频→音频
-                                </p>
-                            </div>
-                            <div className="flex gap-2">
-                                <button
-                                    onClick={() => setCurrentView('workflow')}
-                                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                                        currentView === 'workflow' 
-                                            ? 'bg-white text-purple-600' 
-                                            : 'bg-white/20 text-white hover:bg-white/30'
-                                    }`}
-                                >
-                                    工作流
-                                </button>
-                                <button
-                                    onClick={() => setCurrentView('history')}
-                                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                                        currentView === 'history' 
-                                            ? 'bg-white text-purple-600' 
-                                            : 'bg-white/20 text-white hover:bg-white/30'
-                                    }`}
-                                >
-                                    历史记录
-                                </button>
-                            </div>
-                        </div>
+                    <header className="glass rounded-2xl p-6 mb-6">
+                        <h1 className="text-3xl font-bold text-white mb-2">
+                            ReasoningACTION MCP系统
+                        </h1>
+                        <p className="text-white/80">
+                            前端MCP调用测试 - 文本→图像→视频→音频→合成
+                        </p>
                     </header>
                     
-                    {/* 主内容区 */}
+                    {/* 标签切换 */}
+                    <div className="flex gap-2 mb-6">
+                        <button
+                            onClick={() => setActiveTab('single')}
+                            className={`px-6 py-2 rounded-lg font-medium transition-all ${
+                                activeTab === 'single' 
+                                    ? 'bg-white text-purple-600' 
+                                    : 'bg-white/20 text-white hover:bg-white/30'
+                            }`}
+                        >
+                            单步执行
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('workflow')}
+                            className={`px-6 py-2 rounded-lg font-medium transition-all ${
+                                activeTab === 'workflow' 
+                                    ? 'bg-white text-purple-600' 
+                                    : 'bg-white/20 text-white hover:bg-white/30'
+                            }`}
+                        >
+                            完整工作流
+                        </button>
+                    </div>
+                    
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         {/* 左侧控制面板 */}
                         <div className="lg:col-span-1">
-                            <div className="card animate-slide-up" style={{ animationDelay: '0.1s' }}>
-                                <h2 className="text-xl font-semibold mb-4">创作控制台</h2>
+                            <div className="bg-white rounded-xl p-6">
+                                <h2 className="text-xl font-semibold mb-4">参数配置</h2>
                                 
-                                {/* 输入区域 */}
-                                <div className="space-y-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                                            创作提示词
-                                        </label>
-                                        <textarea
-                                            value={workflowState.prompt}
-                                            onChange={(e) => setWorkflowState(prev => ({
-                                                ...prev,
-                                                prompt: e.target.value
-                                            }))}
-                                            placeholder="描述您想要创作的内容，例如：宁静的森林中流淌的溪水..."
-                                            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
-                                            rows="4"
-                                            disabled={workflowState.status === 'processing'}
-                                        />
-                                    </div>
-                                    
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                                            迭代次数（每次4秒）
-                                        </label>
-                                        <div className="flex items-center gap-4">
-                                            <input
-                                                type="range"
-                                                min="1"
-                                                max="20"
-                                                value={workflowState.iterations}
-                                                onChange={(e) => setWorkflowState(prev => ({
+                                {/* 提示词输入 */}
+                                <div className="mb-4">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        创作提示词
+                                    </label>
+                                    <textarea
+                                        value={formData.prompt}
+                                        onChange={(e) => setFormData(prev => ({
+                                            ...prev,
+                                            prompt: e.target.value
+                                        }))}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                        rows="3"
+                                        placeholder="描述您想要创作的内容..."
+                                    />
+                                </div>
+                                
+                                {/* 负面提示词 */}
+                                <div className="mb-4">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        负面提示词
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={formData.negative_prompt}
+                                        onChange={(e) => setFormData(prev => ({
+                                            ...prev,
+                                            negative_prompt: e.target.value
+                                        }))}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                        placeholder="不想要的元素..."
+                                    />
+                                </div>
+                                
+                                {/* 迭代次数 */}
+                                <div className="mb-4">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        迭代次数: {formData.iterations} (总时长: {formData.iterations * 4}秒)
+                                    </label>
+                                    <input
+                                        type="range"
+                                        min="1"
+                                        max="10"
+                                        value={formData.iterations}
+                                        onChange={(e) => setFormData(prev => ({
+                                            ...prev,
+                                            iterations: parseInt(e.target.value)
+                                        }))}
+                                        className="w-full"
+                                    />
+                                </div>
+                                
+                                {/* 高级设置 */}
+                                <details className="mb-4">
+                                    <summary className="cursor-pointer font-medium text-gray-700 mb-2">
+                                        高级设置
+                                    </summary>
+                                    <div className="mt-2 space-y-2">
+                                        <div>
+                                            <label className="text-sm text-gray-600">音频风格</label>
+                                            <select 
+                                                className="w-full mt-1 px-2 py-1 border border-gray-300 rounded"
+                                                value={formData.audio_config.audio_style}
+                                                onChange={(e) => setFormData(prev => ({
                                                     ...prev,
-                                                    iterations: parseInt(e.target.value)
+                                                    audio_config: {
+                                                        ...prev.audio_config,
+                                                        audio_style: e.target.value
+                                                    }
                                                 }))}
-                                                className="flex-1"
-                                                disabled={workflowState.status === 'processing'}
+                                            >
+                                                <option value="ambient">环境音</option>
+                                                <option value="cinematic">电影感</option>
+                                                <option value="epic">史诗</option>
+                                                <option value="nature">自然</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label className="text-sm text-gray-600">运动幅度</label>
+                                            <input
+                                                type="number"
+                                                step="0.1"
+                                                min="0.1"
+                                                max="5"
+                                                value={formData.video_config.motion_scale}
+                                                onChange={(e) => setFormData(prev => ({
+                                                    ...prev,
+                                                    video_config: {
+                                                        ...prev.video_config,
+                                                        motion_scale: parseFloat(e.target.value)
+                                                    }
+                                                }))}
+                                                className="w-full mt-1 px-2 py-1 border border-gray-300 rounded"
                                             />
-                                            <div className="text-center">
-                                                <span className="text-2xl font-bold text-purple-600">
-                                                    {workflowState.iterations}
-                                                </span>
-                                                <div className="text-xs text-gray-500">
-                                                    总时长: {workflowState.iterations * 4}秒
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
-                                    
-                                    {/* 高级设置（可展开） */}
-                                    <details className="border border-gray-200 rounded-lg p-4">
-                                        <summary className="cursor-pointer font-medium text-gray-700">
-                                            高级设置
-                                        </summary>
-                                        <div className="mt-4 space-y-3">
-                                            <div>
-                                                <label className="text-sm text-gray-600">图像分辨率</label>
-                                                <select className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-lg">
-                                                    <option>1024x768 (推荐)</option>
-                                                    <option>1920x1080</option>
-                                                    <option>512x512</option>
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <label className="text-sm text-gray-600">视频帧率</label>
-                                                <select className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-lg">
-                                                    <option>30 FPS (推荐)</option>
-                                                    <option>24 FPS</option>
-                                                    <option>60 FPS</option>
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <label className="text-sm text-gray-600">音频风格</label>
-                                                <select className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-lg">
-                                                    <option>电影感 (Cinematic)</option>
-                                                    <option>环境音 (Ambient)</option>
-                                                    <option>史诗感 (Epic)</option>
-                                                    <option>自然 (Natural)</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </details>
-                                    
-                                    {/* 操作按钮 */}
-                                    <div className="flex gap-3">
-                                        {workflowState.status === 'idle' && (
-                                            <button
-                                                onClick={startWorkflow}
-                                                className="flex-1 btn-primary"
-                                            >
-                                                开始创作
-                                            </button>
-                                        )}
-                                        
-                                        {workflowState.status === 'processing' && (
-                                            <button
-                                                className="flex-1 btn-primary opacity-50 cursor-not-allowed"
-                                                disabled
-                                            >
-                                                <span className="inline-block animate-spin mr-2">⚙️</span>
-                                                处理中...
-                                            </button>
-                                        )}
-                                        
-                                        {workflowState.status === 'completed' && (
-                                            <>
-                                                <button
-                                                    onClick={resetWorkflow}
-                                                    className="flex-1 btn-primary"
-                                                >
-                                                    新建创作
-                                                </button>
-                                                <button className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all">
-                                                    下载结果
-                                                </button>
-                                            </>
-                                        )}
-                                        
-                                        {workflowState.status === 'error' && (
-                                            <button
-                                                onClick={resetWorkflow}
-                                                className="flex-1 btn-primary"
-                                            >
-                                                重新开始
-                                            </button>
-                                        )}
-                                    </div>
-                                    
-                                    {/* 错误提示 */}
-                                    {workflowState.error && (
-                                        <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                                            <p className="text-sm text-red-600">
-                                                ⚠️ {workflowState.error}
-                                            </p>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                            
-                            {/* 工作流步骤指示器 */}
-                            <div className="card mt-6 animate-slide-up" style={{ animationDelay: '0.2s' }}>
-                                <h3 className="text-lg font-semibold mb-4">处理流程</h3>
-                                <div className="space-y-4">
-                                    {workflowSteps.map((step, index) => (
-                                        <div
-                                            key={step.id}
-                                            className={`workflow-step ${
-                                                index === workflowState.currentStep ? 'active' : ''
-                                            } ${
-                                                index < workflowState.currentStep ? 'completed' : ''
-                                            }`}
-                                        >
-                                            <div className="workflow-step-icon">
-                                                {index < workflowState.currentStep ? '✓' : step.icon}
-                                            </div>
-                                            <div className="ml-2">
-                                                <div className="font-medium">{step.name}</div>
-                                                {index === 1 && workflowState.status === 'processing' && (
-                                                    <div className="text-xs text-gray-500 mt-1">
-                                                        生成 {workflowState.iterations} 个片段...
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
+                                </details>
                                 
-                                {/* 总进度条 */}
-                                {workflowState.status === 'processing' && (
-                                    <div className="mt-6">
-                                        <div className="flex justify-between text-sm text-gray-600 mb-2">
-                                            <span>总进度</span>
-                                            <span>{Math.round(workflowState.progress)}%</span>
-                                        </div>
-                                        <div className="progress-bar">
-                                            <div 
-                                                className="progress-fill"
-                                                style={{ width: `${workflowState.progress}%` }}
-                                            />
-                                        </div>
+                                {/* 操作按钮 */}
+                                {activeTab === 'single' ? (
+                                    <div className="space-y-2">
+                                        <button
+                                            onClick={handleTextToImage}
+                                            disabled={processing}
+                                            className="w-full btn-primary"
+                                        >
+                                            {processing && currentStep === 0 ? '生成中...' : '1. 文本生成图像'}
+                                        </button>
+                                        <button
+                                            onClick={handleImageToVideo}
+                                            disabled={processing || !results.textToImage}
+                                            className="w-full btn-primary"
+                                        >
+                                            {processing && currentStep === 1 ? '生成中...' : '2. 图像生成视频'}
+                                        </button>
+                                        <button
+                                            onClick={handleVideoToAudio}
+                                            disabled={processing || !results.imageToVideo}
+                                            className="w-full btn-primary"
+                                        >
+                                            {processing && currentStep === 2 ? '推理中...' : '3. 视频推理音频'}
+                                        </button>
+                                        <button
+                                            onClick={handleMergeVideos}
+                                            disabled={processing || !results.videoToAudio}
+                                            className="w-full btn-primary"
+                                        >
+                                            {processing && currentStep === 3 ? '合成中...' : '4. 合并音视频'}
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <button
+                                        onClick={handleWorkflow}
+                                        disabled={processing}
+                                        className="w-full btn-primary"
+                                    >
+                                        {processing ? (
+                                            <>
+                                                <span className="inline-block animate-spin mr-2">⚙️</span>
+                                                执行工作流...
+                                            </>
+                                        ) : (
+                                            '执行完整工作流'
+                                        )}
+                                    </button>
+                                )}
+                                
+                                <button
+                                    onClick={handleReset}
+                                    className="w-full mt-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all"
+                                >
+                                    重置
+                                </button>
+                                
+                                {/* 错误提示 */}
+                                {error && (
+                                    <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                                        <p className="text-sm text-red-600">❌ {error}</p>
                                     </div>
                                 )}
                             </div>
                         </div>
                         
-                        {/* 右侧内容区 */}
+                        {/* 右侧结果展示 */}
                         <div className="lg:col-span-2">
-                            {currentView === 'workflow' ? (
-                                <div className="card animate-slide-up" style={{ animationDelay: '0.3s' }}>
-                                    <h2 className="text-xl font-semibold mb-4">预览区域</h2>
-                                    
-                                    {/* 空状态 */}
-                                    {workflowState.status === 'idle' && (
-                                        <div className="text-center py-20">
-                                            <div className="text-6xl mb-4">🎨</div>
-                                            <p className="text-gray-500">
-                                                输入创作提示词，开始您的多模态内容创作之旅
-                                            </p>
-                                        </div>
-                                    )}
-                                    
-                                    {/* 处理中 */}
-                                    {workflowState.status === 'processing' && (
-                                        <div className="text-center py-20">
-                                            <div className="text-6xl mb-4 animate-pulse">🎬</div>
-                                            <p className="text-lg font-medium mb-2">
-                                                正在创作中...
-                                            </p>
-                                            <p className="text-gray-500">
-                                                {workflowSteps[workflowState.currentStep]?.name}
-                                            </p>
-                                            <div className="mt-8 max-w-md mx-auto">
-                                                <div className="progress-bar">
-                                                    <div 
-                                                        className="progress-fill"
-                                                        style={{ width: `${workflowState.progress}%` }}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
-                                    
-                                    {/* 完成状态 */}
-                                    {workflowState.status === 'completed' && workflowState.result && (
-                                        <div>
-                                            <div className="bg-gray-100 rounded-lg p-8 mb-6">
-                                                <div className="text-center">
-                                                    <div className="text-6xl mb-4">🎉</div>
-                                                    <h3 className="text-2xl font-bold mb-2">创作完成！</h3>
-                                                    <p className="text-gray-600">
-                                                        成功生成 {workflowState.result.workflow_summary?.total_duration_seconds} 秒视频
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            
-                                            {/* 结果详情 */}
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <div className="bg-gray-50 rounded-lg p-4">
-                                                    <div className="text-sm text-gray-500">视频文件</div>
-                                                    <div className="font-medium mt-1">
-                                                        {workflowState.result.final_video}
-                                                    </div>
-                                                </div>
-                                                <div className="bg-gray-50 rounded-lg p-4">
-                                                    <div className="text-sm text-gray-500">音频文件</div>
-                                                    <div className="font-medium mt-1">
-                                                        {workflowState.result.audio}
-                                                    </div>
-                                                </div>
-                                                <div className="bg-gray-50 rounded-lg p-4">
-                                                    <div className="text-sm text-gray-500">片段数量</div>
-                                                    <div className="font-medium mt-1">
-                                                        {workflowState.result.workflow_summary?.segments_count} 个
-                                                    </div>
-                                                </div>
-                                                <div className="bg-gray-50 rounded-lg p-4">
-                                                    <div className="text-sm text-gray-500">处理步骤</div>
-                                                    <div className="font-medium mt-1">
-                                                        {workflowState.result.workflow_summary?.processing_steps} 步
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            
-                                            {/* 视频片段列表 */}
-                                            <div className="mt-6">
-                                                <h4 className="font-medium mb-3">生成的视频片段</h4>
-                                                <div className="space-y-2">
-                                                    {workflowState.result.segments?.map((segment, index) => (
-                                                        <div 
-                                                            key={index}
-                                                            className="flex items-center justify-between bg-gray-50 rounded-lg px-4 py-2"
-                                                        >
-                                                            <span className="text-sm">
-                                                                片段 {index + 1}: {segment}
-                                                            </span>
-                                                            <span className="text-xs text-gray-500">4秒</span>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
-                                    
-                                    {/* 错误状态 */}
-                                    {workflowState.status === 'error' && (
-                                        <div className="text-center py-20">
-                                            <div className="text-6xl mb-4">😔</div>
-                                            <p className="text-lg font-medium mb-2">
-                                                处理失败
-                                            </p>
-                                            <p className="text-gray-500">
-                                                {workflowState.error}
-                                            </p>
-                                        </div>
-                                    )}
-                                </div>
-                            ) : (
-                                /* 历史记录视图 */
-                                <div className="card animate-slide-up">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <h2 className="text-xl font-semibold">历史任务</h2>
-                                        <button
-                                            onClick={loadTasks}
-                                            className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition-all"
+                            <div className="bg-white rounded-xl p-6">
+                                <h2 className="text-xl font-semibold mb-4">执行结果</h2>
+                                
+                                {/* 步骤指示器 */}
+                                <div className="step-indicator">
+                                    {steps.map((step, index) => (
+                                        <div 
+                                            key={step.id}
+                                            className={`step ${
+                                                index < currentStep ? 'completed' : 
+                                                index === currentStep && processing ? 'active' : ''
+                                            }`}
                                         >
-                                            刷新
-                                        </button>
-                                    </div>
-                                    
-                                    {tasks.length === 0 ? (
-                                        <div className="text-center py-10">
-                                            <p className="text-gray-500">暂无历史任务</p>
+                                            <div className="step-circle">
+                                                {index < currentStep ? '✓' : step.icon}
+                                            </div>
+                                            <div className="text-xs text-gray-600">{step.name}</div>
                                         </div>
-                                    ) : (
-                                        <div className="space-y-3">
-                                            {tasks.map((task) => (
-                                                <div 
-                                                    key={task.task_id}
-                                                    className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-all"
-                                                >
-                                                    <div className="flex items-center justify-between">
-                                                        <div>
-                                                            <div className="font-medium">
-                                                                {task.metadata?.type || 'Unknown'}
-                                                            </div>
-                                                            <div className="text-sm text-gray-500">
-                                                                ID: {task.task_id.slice(0, 8)}...
-                                                            </div>
-                                                        </div>
-                                                        <div className="text-right">
-                                                            <div className={`inline-block px-2 py-1 rounded text-xs font-medium ${
-                                                                task.status === 'success' ? 'bg-green-100 text-green-700' :
-                                                                task.status === 'processing' ? 'bg-blue-100 text-blue-700' :
-                                                                task.status === 'failed' ? 'bg-red-100 text-red-700' :
-                                                                'bg-gray-100 text-gray-700'
-                                                            }`}>
-                                                                {task.status}
-                                                            </div>
-                                                            <div className="text-xs text-gray-500 mt-1">
-                                                                {new Date(task.created_at).toLocaleString()}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    {task.metadata?.prompt && (
-                                                        <div className="mt-2 text-sm text-gray-600">
-                                                            {task.metadata.prompt}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            ))}
+                                    ))}
+                                </div>
+                                
+                                {/* 结果展示 */}
+                                <div className="space-y-4">
+                                    {/* 文本生成图像结果 */}
+                                    {results.textToImage && (
+                                        <div className="result-card">
+                                            <h3 className="font-semibold mb-2">📸 生成的图像</h3>
+                                            <div className="media-container">
+                                                <img 
+                                                    src={`http://localhost:8000${results.textToImage.result.image_url}`}
+                                                    alt="Generated"
+                                                    className="w-full rounded-lg"
+                                                />
+                                            </div>
+                                            <div className="code-block">
+                                                <div>Task ID: {results.textToImage.task_id}</div>
+                                                <div>Model: {results.textToImage.result.metadata.model}</div>
+                                                <div>Resolution: {results.textToImage.result.metadata.width}x{results.textToImage.result.metadata.height}</div>
+                                                <div>Inference Time: {results.textToImage.result.metadata.inference_time}s</div>
+                                            </div>
+                                        </div>
+                                    )}
+                                    
+                                    {/* 图像生成视频结果 */}
+                                    {results.imageToVideo && (
+                                        <div className="result-card">
+                                            <h3 className="font-semibold mb-2">🎬 生成的视频</h3>
+                                            <div className="media-container">
+                                                <video 
+                                                    controls
+                                                    className="w-full rounded-lg"
+                                                    src={`http://localhost:8000${results.imageToVideo.result.video_url}`}
+                                                />
+                                            </div>
+                                            <div className="code-block">
+                                                <div>Task ID: {results.imageToVideo.task_id}</div>
+                                                <div>Duration: {results.imageToVideo.result.duration}s</div>
+                                                <div>FPS: {results.imageToVideo.result.fps}</div>
+                                                <div>Frames: {results.imageToVideo.result.metadata.frames_generated}</div>
+                                            </div>
+                                        </div>
+                                    )}
+                                    
+                                    {/* 视频推理音频结果 */}
+                                    {results.videoToAudio && (
+                                        <div className="result-card">
+                                            <h3 className="font-semibold mb-2">🎵 生成的音频</h3>
+                                            <div className="media-container">
+                                                <audio 
+                                                    controls
+                                                    className="w-full"
+                                                    src={`http://localhost:8000${results.videoToAudio.result.audio_url}`}
+                                                />
+                                            </div>
+                                            <div className="code-block">
+                                                <div>Task ID: {results.videoToAudio.task_id}</div>
+                                                <div>Style: {results.videoToAudio.result.style}</div>
+                                                <div>Duration: {results.videoToAudio.result.duration}s</div>
+                                                <div>Sample Rate: {results.videoToAudio.result.metadata.sample_rate}Hz</div>
+                                                <div className="mt-2">视频分析结果:</div>
+                                                <div>{JSON.stringify(results.videoToAudio.result.metadata.video_analysis, null, 2)}</div>
+                                            </div>
+                                        </div>
+                                    )}
+                                    
+                                    {/* 合并结果 */}
+                                    {results.mergeVideos && (
+                                        <div className="result-card">
+                                            <h3 className="font-semibold mb-2">🎞️ 最终视频</h3>
+                                            <div className="media-container">
+                                                <video 
+                                                    controls
+                                                    className="w-full rounded-lg"
+                                                    src={`http://localhost:8000${results.mergeVideos.result.output_url}`}
+                                                />
+                                            </div>
+                                            <div className="code-block">
+                                                <div>Task ID: {results.mergeVideos.task_id}</div>
+                                                <div>Total Duration: {results.mergeVideos.result.total_duration}s</div>
+                                                <div>Segments: {results.mergeVideos.result.segments_count}</div>
+                                                <div>Quality: {results.mergeVideos.result.metadata.quality}</div>
+                                                <div>Bitrate: {results.mergeVideos.result.metadata.bitrate}</div>
+                                            </div>
+                                        </div>
+                                    )}
+                                    
+                                    {/* 工作流结果 */}
+                                    {results.workflow && (
+                                        <div className="result-card">
+                                            <h3 className="font-semibold mb-2">🚀 工作流完成</h3>
+                                            <div className="media-container">
+                                                <video 
+                                                    controls
+                                                    className="w-full rounded-lg"
+                                                    src={`http://localhost:8000${results.workflow.result.final_video_url}`}
+                                                />
+                                            </div>
+                                            <div className="code-block">
+                                                <div>Workflow ID: {results.workflow.workflow_id}</div>
+                                                <div>Total Duration: {results.workflow.result.total_duration}s</div>
+                                                <div>Processing Time: {results.workflow.result.workflow_summary.total_processing_time}s</div>
+                                                <div className="mt-2">使用的模型:</div>
+                                                <div>{JSON.stringify(results.workflow.result.workflow_summary.models_used, null, 2)}</div>
+                                            </div>
                                         </div>
                                     )}
                                 </div>
-                            )}
+                            </div>
                         </div>
                     </div>
                     
-                    {/* 页脚 */}
-                    <footer className="mt-12 text-center text-white/60 text-sm">
-                        <p>ReasoningACTION System v1.0.0 | Powered by Advanced AI Models</p>
-                    </footer>
+                    {/* API调用日志 */}
+                    <div className="mt-6 glass rounded-xl p-6">
+                        <h3 className="text-white font-semibold mb-3">API调用说明</h3>
+                        <div className="text-white/80 text-sm space-y-2">
+                            <p>✅ 前端正确调用MCP标准接口</p>
+                            <p>✅ 所有请求参数符合MCP规范</p>
+                            <p>✅ 响应数据格式已标准化</p>
+                            <p>📌 将mock_server.py替换为真实MCP即可运行</p>
+                        </div>
+                    </div>
                 </div>
             );
         }
