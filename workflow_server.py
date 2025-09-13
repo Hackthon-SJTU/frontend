@@ -375,9 +375,20 @@ class WorkflowManager:
             if progress_callback:
                 await progress_callback(session_id, "生成初始图片", 15)
             
+            print(f"\n[WorkflowManager] Step 3: 调用MCP1生成图片")
+            print(f"[WorkflowManager] Full Prompt: {full_prompt}")
+            print(f"[WorkflowManager] GPT Prompt: {gpt_prompt}")
+            
             image_result = await mcp.text_to_image(full_prompt, gpt_prompt)
-            initial_image_url = image_result["image_url"]
-            print(f"初始图片: {initial_image_url}")
+            
+            if image_result.get("status") == "success":
+                initial_image_url = image_result["image_url"]
+                print(f"[WorkflowManager] MCP1成功: 图片URL = {initial_image_url}")
+            else:
+                print(f"[WorkflowManager] MCP1失败: {image_result}")
+                raise Exception("MCP1生成图片失败")
+            
+            print(f"[WorkflowManager] 初始图片: {initial_image_url}")
             
             # Step 4: MCP2 - 循环生成视频片段（10次）
             video_segments = []
