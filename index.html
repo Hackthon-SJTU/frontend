@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReasoningACTION MCP系统</title>
+    <title>ReasoningACTION - AI视频生成系统</title>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -19,24 +19,158 @@
         
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
         }
         
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+        
+        /* 动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .animate-pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+        
+        /* 玻璃态效果 */
         .glass {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
-        .btn-primary {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        /* 对话气泡 */
+        .message-user {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 12px 24px;
+            border-radius: 18px 18px 4px 18px;
+            padding: 12px 16px;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+        
+        .message-assistant {
+            background: white;
+            color: #1f2937;
+            border-radius: 18px 18px 18px 4px;
+            padding: 12px 16px;
+            max-width: 70%;
+            word-wrap: break-word;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 进度条 */
+        .progress-bar {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+        
+        /* 工作流步骤 */
+        .workflow-step {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .workflow-step.active {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+        
+        .workflow-step.completed {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .step-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 16px;
+        }
+        
+        .step-icon.pending {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .step-icon.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .step-icon.completed {
+            background: #10b981;
+            color: white;
+        }
+        
+        /* 视频预览 */
+        .video-container {
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* 按钮 */
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
             border-radius: 8px;
             font-weight: 600;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+            border: none;
+            cursor: pointer;
         }
         
         .btn-primary:hover:not(:disabled) {
@@ -49,99 +183,19 @@
             cursor: not-allowed;
         }
         
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        .animate-spin {
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        .animate-pulse {
-            animation: pulse 2s infinite;
-        }
-        
-        .media-container {
-            background: #1f2937;
-            border-radius: 12px;
-            padding: 16px;
-            margin-top: 16px;
-        }
-        
-        .step-indicator {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin: 24px 0;
-        }
-        
-        .step {
-            flex: 1;
-            text-align: center;
-            position: relative;
-        }
-        
-        .step::after {
-            content: '';
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            width: 100%;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.2);
-            z-index: -1;
-        }
-        
-        .step:last-child::after {
-            display: none;
-        }
-        
-        .step-circle {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 8px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-        
-        .step.active .step-circle {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            color: white;
-        }
-        
-        .step.completed .step-circle {
-            background: #10b981;
-            color: white;
-        }
-        
-        .result-card {
+        .btn-secondary {
             background: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 16px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            color: #667eea;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid #667eea;
+            cursor: pointer;
         }
         
-        .code-block {
-            background: #1f2937;
-            color: #f3f4f6;
-            padding: 12px;
-            border-radius: 8px;
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            overflow-x: auto;
-            margin-top: 8px;
+        .btn-secondary:hover {
+            background: rgba(99, 102, 241, 0.1);
         }
     </style>
 </head>
@@ -151,671 +205,380 @@
     <script type="text/babel">
         const { useState, useEffect, useRef, useCallback } = React;
         
-        // ==================== MCP API 客户端 ====================
-        class MCPClient {
-            constructor(baseUrl = 'http://localhost:8000') {
-                this.baseUrl = baseUrl;
-            }
+        // API配置
+        const API_BASE_URL = 'http://localhost:8000';
+        
+        // 工作流步骤定义
+        const WORKFLOW_STEPS = [
+            { id: 'extract', name: '提炼核心概念', icon: '🤖' },
+            { id: 'generate_image', name: '生成初始图片', icon: '🎨' },
+            { id: 'generate_video', name: '生成视频片段', icon: '🎬' },
+            { id: 'generate_audio', name: '生成音频', icon: '🎵' },
+            { id: 'merge', name: '合成最终视频', icon: '🎞️' }
+        ];
+        
+        // 主应用组件
+        function App() {
+            const [messages, setMessages] = useState([]);
+            const [inputText, setInputText] = useState('');
+            const [isProcessing, setIsProcessing] = useState(false);
+            const [currentSession, setCurrentSession] = useState(null);
+            const [workflowStatus, setWorkflowStatus] = useState({
+                step: '',
+                progress: 0,
+                currentVideoSegment: 0
+            });
+            const [videoUrl, setVideoUrl] = useState(null);
+            const [gptPrompt, setGptPrompt] = useState('');
+            const messagesEndRef = useRef(null);
+            const wsRef = useRef(null);
             
-            async request(endpoint, options = {}) {
+            // 自动滚动到底部
+            const scrollToBottom = () => {
+                messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+            };
+            
+            useEffect(() => {
+                scrollToBottom();
+            }, [messages]);
+            
+            // WebSocket连接
+            const connectWebSocket = (sessionId) => {
+                const ws = new WebSocket(`ws://localhost:8000/ws/${sessionId}`);
+                
+                ws.onopen = () => {
+                    console.log('WebSocket连接已建立');
+                };
+                
+                ws.onmessage = (event) => {
+                    const data = JSON.parse(event.data);
+                    if (data.type === 'progress') {
+                        // 解析进度信息
+                        let currentVideoSegment = 0;
+                        if (data.step.includes('视频片段')) {
+                            const match = data.step.match(/(\d+)\/10/);
+                            if (match) {
+                                currentVideoSegment = parseInt(match[1]);
+                            }
+                        }
+                        
+                        setWorkflowStatus({
+                            step: data.step,
+                            progress: data.progress,
+                            currentVideoSegment
+                        });
+                    }
+                };
+                
+                ws.onerror = (error) => {
+                    console.error('WebSocket错误:', error);
+                };
+                
+                ws.onclose = () => {
+                    console.log('WebSocket连接已关闭');
+                };
+                
+                wsRef.current = ws;
+            };
+            
+            // 发送消息
+            const sendMessage = async () => {
+                if (!inputText.trim()) return;
+                
+                const userMessage = inputText;
+                setInputText('');
+                setIsProcessing(true);
+                
+                // 添加用户消息
+                setMessages(prev => [...prev, {
+                    type: 'user',
+                    content: userMessage,
+                    timestamp: new Date()
+                }]);
+                
                 try {
-                    const response = await fetch(`${this.baseUrl}${endpoint}`, {
-                        ...options,
+                    // 调用聊天API
+                    const response = await fetch(`${API_BASE_URL}/api/chat`, {
+                        method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            ...options.headers,
                         },
+                        body: JSON.stringify({
+                            message: userMessage,
+                            session_id: currentSession
+                        })
                     });
                     
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
+                    const data = await response.json();
+                    setCurrentSession(data.session_id);
                     
-                    return await response.json();
-                } catch (error) {
-                    console.error('MCP API Error:', error);
-                    throw error;
-                }
-            }
-            
-            // MCP标准接口：文本生成图像
-            async textToImage(prompt, config = {}) {
-                return this.request('/mcp/text-to-image', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        prompt,
-                        negative_prompt: config.negative_prompt || '',
-                        width: config.width || 1024,
-                        height: config.height || 768,
-                        guidance_scale: config.guidance_scale || 7.5,
-                        num_inference_steps: config.num_inference_steps || 50,
-                        seed: config.seed || -1
-                    }),
-                });
-            }
-            
-            // MCP标准接口：图像生成视频
-            async imageToVideo(imageUrl, config = {}) {
-                return this.request('/mcp/image-to-video', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        image_url: imageUrl,
-                        motion_scale: config.motion_scale || 1.0,
-                        fps: config.fps || 30,
-                        duration: 4.0,  // 固定4秒
-                        transition_type: config.transition_type || 'none'
-                    }),
-                });
-            }
-            
-            // MCP标准接口：视频推理音频
-            async videoToAudio(videoUrl, config = {}) {
-                return this.request('/mcp/video-to-audio', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        video_url: videoUrl,
-                        audio_style: config.audio_style || 'ambient',
-                        include_sfx: config.include_sfx !== false,
-                        volume: config.volume || 0.8
-                    }),
-                });
-            }
-            
-            // MCP标准接口：合并视频
-            async mergeVideos(videoSegments, audioUrl, config = {}) {
-                return this.request('/mcp/merge-videos', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        video_segments: videoSegments,
-                        audio_url: audioUrl,
-                        output_format: config.output_format || 'mp4',
-                        quality: config.quality || 'high'
-                    }),
-                });
-            }
-            
-            // MCP标准接口：完整工作流
-            async executeWorkflow(prompt, iterations, config = {}) {
-                return this.request('/mcp/workflow', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        prompt,
-                        iterations,
-                        auto_enhance: config.auto_enhance !== false,
-                        workflow_config: config
-                    }),
-                });
-            }
-            
-            // 查询任务状态
-            async getTaskStatus(taskId) {
-                return this.request(`/mcp/status/${taskId}`);
-            }
-        }
-        
-        // 创建MCP客户端实例
-        const mcpClient = new MCPClient();
-        
-        // ==================== 主应用组件 ====================
-        function App() {
-            const [activeTab, setActiveTab] = useState('single'); // single | workflow
-            const [currentStep, setCurrentStep] = useState(0);
-            const [processing, setProcessing] = useState(false);
-            const [results, setResults] = useState({
-                textToImage: null,
-                imageToVideo: null,
-                videoToAudio: null,
-                mergeVideos: null,
-                workflow: null
-            });
-            const [error, setError] = useState(null);
-            
-            // 表单数据
-            const [formData, setFormData] = useState({
-                prompt: '宁静的森林中，阳光透过树叶洒下，小溪缓缓流淌',
-                negative_prompt: 'low quality, blurry',
-                iterations: 3,
-                image_config: {
-                    width: 1024,
-                    height: 768,
-                    guidance_scale: 7.5,
-                    num_inference_steps: 50
-                },
-                video_config: {
-                    motion_scale: 1.5,
-                    fps: 30
-                },
-                audio_config: {
-                    audio_style: 'nature',
-                    include_sfx: true,
-                    volume: 0.8
-                }
-            });
-            
-            // 步骤定义
-            const steps = [
-                { id: 'text-to-image', name: '文本生成图像', icon: '🎨' },
-                { id: 'image-to-video', name: '图像生成视频', icon: '🎬' },
-                { id: 'video-to-audio', name: '视频推理音频', icon: '🎵' },
-                { id: 'merge', name: '音视频合成', icon: '🎞️' }
-            ];
-            
-            // 单步执行：文本生成图像
-            const handleTextToImage = async () => {
-                setProcessing(true);
-                setError(null);
-                setCurrentStep(0);
-                
-                try {
-                    console.log('调用MCP: text-to-image', formData.prompt);
-                    const response = await mcpClient.textToImage(
-                        formData.prompt,
-                        formData.image_config
-                    );
+                    // 连接WebSocket获取实时进度
+                    connectWebSocket(data.session_id);
                     
-                    console.log('MCP响应:', response);
-                    setResults(prev => ({ ...prev, textToImage: response }));
-                    setCurrentStep(1);
-                } catch (err) {
-                    setError(err.message);
-                    console.error('文本生成图像失败:', err);
-                } finally {
-                    setProcessing(false);
-                }
-            };
-            
-            // 单步执行：图像生成视频
-            const handleImageToVideo = async () => {
-                if (!results.textToImage) {
-                    setError('请先生成图像');
-                    return;
-                }
-                
-                setProcessing(true);
-                setError(null);
-                setCurrentStep(1);
-                
-                try {
-                    const imageUrl = results.textToImage.result.image_url;
-                    console.log('调用MCP: image-to-video', imageUrl);
+                    // 添加助手响应
+                    setMessages(prev => [...prev, {
+                        type: 'assistant',
+                        content: '收到您的请求！正在为您生成视频，这个过程大约需要2-3分钟...',
+                        timestamp: new Date()
+                    }]);
                     
-                    const response = await mcpClient.imageToVideo(
-                        imageUrl,
-                        formData.video_config
-                    );
-                    
-                    console.log('MCP响应:', response);
-                    setResults(prev => ({ ...prev, imageToVideo: response }));
-                    setCurrentStep(2);
-                } catch (err) {
-                    setError(err.message);
-                    console.error('图像生成视频失败:', err);
-                } finally {
-                    setProcessing(false);
-                }
-            };
-            
-            // 单步执行：视频推理音频
-            const handleVideoToAudio = async () => {
-                if (!results.imageToVideo) {
-                    setError('请先生成视频');
-                    return;
-                }
-                
-                setProcessing(true);
-                setError(null);
-                setCurrentStep(2);
-                
-                try {
-                    const videoUrl = results.imageToVideo.result.video_url;
-                    console.log('调用MCP: video-to-audio', videoUrl);
-                    
-                    const response = await mcpClient.videoToAudio(
-                        videoUrl,
-                        formData.audio_config
-                    );
-                    
-                    console.log('MCP响应:', response);
-                    setResults(prev => ({ ...prev, videoToAudio: response }));
-                    setCurrentStep(3);
-                } catch (err) {
-                    setError(err.message);
-                    console.error('视频推理音频失败:', err);
-                } finally {
-                    setProcessing(false);
-                }
-            };
-            
-            // 单步执行：合并视频
-            const handleMergeVideos = async () => {
-                if (!results.imageToVideo || !results.videoToAudio) {
-                    setError('请先完成视频和音频生成');
-                    return;
-                }
-                
-                setProcessing(true);
-                setError(null);
-                setCurrentStep(3);
-                
-                try {
-                    // 模拟多个视频片段（实际应该是多次调用imageToVideo）
-                    const videoSegments = [];
-                    for (let i = 0; i < formData.iterations; i++) {
-                        videoSegments.push(results.imageToVideo.result.video_url);
-                    }
-                    
-                    const audioUrl = results.videoToAudio.result.audio_url;
-                    console.log('调用MCP: merge-videos', { videoSegments, audioUrl });
-                    
-                    const response = await mcpClient.mergeVideos(
-                        videoSegments,
-                        audioUrl,
-                        { quality: 'high', output_format: 'mp4' }
-                    );
-                    
-                    console.log('MCP响应:', response);
-                    setResults(prev => ({ ...prev, mergeVideos: response }));
-                    setCurrentStep(4);
-                } catch (err) {
-                    setError(err.message);
-                    console.error('合并视频失败:', err);
-                } finally {
-                    setProcessing(false);
-                }
-            };
-            
-            // 执行完整工作流
-            const handleWorkflow = async () => {
-                setProcessing(true);
-                setError(null);
-                setCurrentStep(0);
-                
-                try {
-                    console.log('调用MCP: workflow', {
-                        prompt: formData.prompt,
-                        iterations: formData.iterations
-                    });
-                    
-                    const response = await mcpClient.executeWorkflow(
-                        formData.prompt,
-                        formData.iterations,
-                        {
-                            image_config: formData.image_config,
-                            video_config: formData.video_config,
-                            audio_config: formData.audio_config
+                    // 轮询状态
+                    const pollStatus = setInterval(async () => {
+                        const statusResponse = await fetch(`${API_BASE_URL}/api/status/${data.session_id}`);
+                        const statusData = await statusResponse.json();
+                        
+                        if (statusData.gpt_prompt && !gptPrompt) {
+                            setGptPrompt(statusData.gpt_prompt);
                         }
-                    );
+                        
+                        if (statusData.status === 'completed') {
+                            clearInterval(pollStatus);
+                            setVideoUrl(statusData.video_url);
+                            setIsProcessing(false);
+                            
+                            setMessages(prev => [...prev, {
+                                type: 'assistant',
+                                content: `视频生成完成！总时长40秒，包含10个连续的4秒片段。\n\n核心概念：${statusData.gpt_prompt}`,
+                                timestamp: new Date(),
+                                hasVideo: true,
+                                videoUrl: statusData.video_url
+                            }]);
+                            
+                            // 关闭WebSocket
+                            if (wsRef.current) {
+                                wsRef.current.close();
+                            }
+                        } else if (statusData.status === 'error') {
+                            clearInterval(pollStatus);
+                            setIsProcessing(false);
+                            
+                            setMessages(prev => [...prev, {
+                                type: 'assistant',
+                                content: `生成失败：${statusData.error}`,
+                                timestamp: new Date(),
+                                isError: true
+                            }]);
+                            
+                            if (wsRef.current) {
+                                wsRef.current.close();
+                            }
+                        }
+                    }, 1000);
                     
-                    console.log('MCP工作流响应:', response);
-                    setResults(prev => ({ ...prev, workflow: response }));
-                    setCurrentStep(4);
-                } catch (err) {
-                    setError(err.message);
-                    console.error('工作流执行失败:', err);
-                } finally {
-                    setProcessing(false);
+                } catch (error) {
+                    console.error('发送消息失败:', error);
+                    setIsProcessing(false);
+                    
+                    setMessages(prev => [...prev, {
+                        type: 'assistant',
+                        content: '抱歉，发生了错误。请稍后重试。',
+                        timestamp: new Date(),
+                        isError: true
+                    }]);
                 }
             };
             
-            // 重置
-            const handleReset = () => {
-                setResults({
-                    textToImage: null,
-                    imageToVideo: null,
-                    videoToAudio: null,
-                    mergeVideos: null,
-                    workflow: null
-                });
-                setCurrentStep(0);
-                setError(null);
+            // 下载视频
+            const downloadVideo = () => {
+                if (!currentSession) return;
+                window.open(`${API_BASE_URL}/api/download/${currentSession}`, '_blank');
             };
+            
+            // 获取当前步骤索引
+            const getCurrentStepIndex = () => {
+                const stepText = workflowStatus.step.toLowerCase();
+                if (stepText.includes('提炼')) return 0;
+                if (stepText.includes('初始图')) return 1;
+                if (stepText.includes('视频片段')) return 2;
+                if (stepText.includes('音频')) return 3;
+                if (stepText.includes('合成') || stepText.includes('最终')) return 4;
+                return -1;
+            };
+            
+            const currentStepIndex = getCurrentStepIndex();
             
             return (
-                <div className="min-h-screen p-6">
-                    {/* 头部 */}
-                    <header className="glass rounded-2xl p-6 mb-6">
-                        <h1 className="text-3xl font-bold text-white mb-2">
-                            ReasoningACTION MCP系统
-                        </h1>
-                        <p className="text-white/80">
-                            前端MCP调用测试 - 文本→图像→视频→音频→合成
-                        </p>
-                    </header>
-                    
-                    {/* 标签切换 */}
-                    <div className="flex gap-2 mb-6">
-                        <button
-                            onClick={() => setActiveTab('single')}
-                            className={`px-6 py-2 rounded-lg font-medium transition-all ${
-                                activeTab === 'single' 
-                                    ? 'bg-white text-purple-600' 
-                                    : 'bg-white/20 text-white hover:bg-white/30'
-                            }`}
-                        >
-                            单步执行
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('workflow')}
-                            className={`px-6 py-2 rounded-lg font-medium transition-all ${
-                                activeTab === 'workflow' 
-                                    ? 'bg-white text-purple-600' 
-                                    : 'bg-white/20 text-white hover:bg-white/30'
-                            }`}
-                        >
-                            完整工作流
-                        </button>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        {/* 左侧控制面板 */}
-                        <div className="lg:col-span-1">
-                            <div className="bg-white rounded-xl p-6">
-                                <h2 className="text-xl font-semibold mb-4">参数配置</h2>
-                                
-                                {/* 提示词输入 */}
-                                <div className="mb-4">
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        创作提示词
-                                    </label>
-                                    <textarea
-                                        value={formData.prompt}
-                                        onChange={(e) => setFormData(prev => ({
-                                            ...prev,
-                                            prompt: e.target.value
-                                        }))}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-                                        rows="3"
-                                        placeholder="描述您想要创作的内容..."
-                                    />
-                                </div>
-                                
-                                {/* 负面提示词 */}
-                                <div className="mb-4">
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        负面提示词
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={formData.negative_prompt}
-                                        onChange={(e) => setFormData(prev => ({
-                                            ...prev,
-                                            negative_prompt: e.target.value
-                                        }))}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-                                        placeholder="不想要的元素..."
-                                    />
-                                </div>
-                                
-                                {/* 迭代次数 */}
-                                <div className="mb-4">
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        迭代次数: {formData.iterations} (总时长: {formData.iterations * 4}秒)
-                                    </label>
-                                    <input
-                                        type="range"
-                                        min="1"
-                                        max="10"
-                                        value={formData.iterations}
-                                        onChange={(e) => setFormData(prev => ({
-                                            ...prev,
-                                            iterations: parseInt(e.target.value)
-                                        }))}
-                                        className="w-full"
-                                    />
-                                </div>
-                                
-                                {/* 高级设置 */}
-                                <details className="mb-4">
-                                    <summary className="cursor-pointer font-medium text-gray-700 mb-2">
-                                        高级设置
-                                    </summary>
-                                    <div className="mt-2 space-y-2">
-                                        <div>
-                                            <label className="text-sm text-gray-600">音频风格</label>
-                                            <select 
-                                                className="w-full mt-1 px-2 py-1 border border-gray-300 rounded"
-                                                value={formData.audio_config.audio_style}
-                                                onChange={(e) => setFormData(prev => ({
-                                                    ...prev,
-                                                    audio_config: {
-                                                        ...prev.audio_config,
-                                                        audio_style: e.target.value
-                                                    }
-                                                }))}
-                                            >
-                                                <option value="ambient">环境音</option>
-                                                <option value="cinematic">电影感</option>
-                                                <option value="epic">史诗</option>
-                                                <option value="nature">自然</option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label className="text-sm text-gray-600">运动幅度</label>
-                                            <input
-                                                type="number"
-                                                step="0.1"
-                                                min="0.1"
-                                                max="5"
-                                                value={formData.video_config.motion_scale}
-                                                onChange={(e) => setFormData(prev => ({
-                                                    ...prev,
-                                                    video_config: {
-                                                        ...prev.video_config,
-                                                        motion_scale: parseFloat(e.target.value)
-                                                    }
-                                                }))}
-                                                className="w-full mt-1 px-2 py-1 border border-gray-300 rounded"
-                                            />
-                                        </div>
-                                    </div>
-                                </details>
-                                
-                                {/* 操作按钮 */}
-                                {activeTab === 'single' ? (
-                                    <div className="space-y-2">
-                                        <button
-                                            onClick={handleTextToImage}
-                                            disabled={processing}
-                                            className="w-full btn-primary"
-                                        >
-                                            {processing && currentStep === 0 ? '生成中...' : '1. 文本生成图像'}
-                                        </button>
-                                        <button
-                                            onClick={handleImageToVideo}
-                                            disabled={processing || !results.textToImage}
-                                            className="w-full btn-primary"
-                                        >
-                                            {processing && currentStep === 1 ? '生成中...' : '2. 图像生成视频'}
-                                        </button>
-                                        <button
-                                            onClick={handleVideoToAudio}
-                                            disabled={processing || !results.imageToVideo}
-                                            className="w-full btn-primary"
-                                        >
-                                            {processing && currentStep === 2 ? '推理中...' : '3. 视频推理音频'}
-                                        </button>
-                                        <button
-                                            onClick={handleMergeVideos}
-                                            disabled={processing || !results.videoToAudio}
-                                            className="w-full btn-primary"
-                                        >
-                                            {processing && currentStep === 3 ? '合成中...' : '4. 合并音视频'}
-                                        </button>
-                                    </div>
-                                ) : (
-                                    <button
-                                        onClick={handleWorkflow}
-                                        disabled={processing}
-                                        className="w-full btn-primary"
-                                    >
-                                        {processing ? (
-                                            <>
-                                                <span className="inline-block animate-spin mr-2">⚙️</span>
-                                                执行工作流...
-                                            </>
-                                        ) : (
-                                            '执行完整工作流'
-                                        )}
-                                    </button>
-                                )}
-                                
-                                <button
-                                    onClick={handleReset}
-                                    className="w-full mt-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all"
-                                >
-                                    重置
-                                </button>
-                                
-                                {/* 错误提示 */}
-                                {error && (
-                                    <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                                        <p className="text-sm text-red-600">❌ {error}</p>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
+                <div className="min-h-screen p-4 md:p-6">
+                    <div className="max-w-6xl mx-auto">
+                        {/* 头部 */}
+                        <header className="glass rounded-2xl p-6 mb-6 animate-fade-in">
+                            <h1 className="text-3xl font-bold text-white mb-2">
+                                🎬 ReasoningACTION AI视频生成系统
+                            </h1>
+                            <p className="text-white/80">
+                                通过自然语言描述，AI自动生成40秒的完整视频
+                            </p>
+                        </header>
                         
-                        {/* 右侧结果展示 */}
-                        <div className="lg:col-span-2">
-                            <div className="bg-white rounded-xl p-6">
-                                <h2 className="text-xl font-semibold mb-4">执行结果</h2>
-                                
-                                {/* 步骤指示器 */}
-                                <div className="step-indicator">
-                                    {steps.map((step, index) => (
-                                        <div 
-                                            key={step.id}
-                                            className={`step ${
-                                                index < currentStep ? 'completed' : 
-                                                index === currentStep && processing ? 'active' : ''
-                                            }`}
-                                        >
-                                            <div className="step-circle">
-                                                {index < currentStep ? '✓' : step.icon}
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            {/* 左侧 - 对话区域 */}
+                            <div className="lg:col-span-2">
+                                <div className="bg-white rounded-xl shadow-xl animate-fade-in">
+                                    {/* 消息列表 */}
+                                    <div className="h-96 overflow-y-auto p-6 space-y-4">
+                                        {messages.length === 0 ? (
+                                            <div className="text-center text-gray-500 py-12">
+                                                <div className="text-4xl mb-4">💭</div>
+                                                <p>描述您想要生成的视频场景</p>
+                                                <p className="text-sm mt-2">例如：生成一个森林场景的流式视频</p>
                                             </div>
-                                            <div className="text-xs text-gray-600">{step.name}</div>
+                                        ) : (
+                                            messages.map((msg, index) => (
+                                                <div
+                                                    key={index}
+                                                    className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}
+                                                >
+                                                    <div className={msg.type === 'user' ? 'message-user' : 'message-assistant'}>
+                                                        <div className="whitespace-pre-wrap">{msg.content}</div>
+                                                        {msg.hasVideo && msg.videoUrl && (
+                                                            <div className="mt-4">
+                                                                <video
+                                                                    controls
+                                                                    className="w-full rounded-lg"
+                                                                    src={`${API_BASE_URL}${msg.videoUrl}`}
+                                                                />
+                                                                <button
+                                                                    onClick={downloadVideo}
+                                                                    className="btn-secondary mt-2 w-full"
+                                                                >
+                                                                    📥 下载视频
+                                                                </button>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            ))
+                                        )}
+                                        <div ref={messagesEndRef} />
+                                    </div>
+                                    
+                                    {/* 输入区域 */}
+                                    <div className="border-t p-4">
+                                        <div className="flex gap-2">
+                                            <input
+                                                type="text"
+                                                value={inputText}
+                                                onChange={(e) => setInputText(e.target.value)}
+                                                onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && sendMessage()}
+                                                placeholder="描述您想要的视频..."
+                                                disabled={isProcessing}
+                                                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                            />
+                                            <button
+                                                onClick={sendMessage}
+                                                disabled={isProcessing || !inputText.trim()}
+                                                className="btn-primary"
+                                            >
+                                                {isProcessing ? (
+                                                    <span className="inline-block animate-spin">⚙️</span>
+                                                ) : (
+                                                    '发送'
+                                                )}
+                                            </button>
                                         </div>
-                                    ))}
+                                    </div>
                                 </div>
                                 
-                                {/* 结果展示 */}
-                                <div className="space-y-4">
-                                    {/* 文本生成图像结果 */}
-                                    {results.textToImage && (
-                                        <div className="result-card">
-                                            <h3 className="font-semibold mb-2">📸 生成的图像</h3>
-                                            <div className="media-container">
-                                                <img 
-                                                    src={`http://localhost:8000${results.textToImage.result.image_url}`}
-                                                    alt="Generated"
-                                                    className="w-full rounded-lg"
-                                                />
+                                {/* GPT Prompt显示 */}
+                                {gptPrompt && (
+                                    <div className="mt-6 glass rounded-xl p-4 animate-fade-in">
+                                        <h3 className="text-white font-semibold mb-2">🤖 AI提炼的核心概念</h3>
+                                        <p className="text-white/90 text-sm">{gptPrompt}</p>
+                                    </div>
+                                )}
+                            </div>
+                            
+                            {/* 右侧 - 工作流状态 */}
+                            <div className="lg:col-span-1">
+                                <div className="bg-white rounded-xl shadow-xl p-6 animate-fade-in">
+                                    <h2 className="text-xl font-semibold mb-4">工作流程</h2>
+                                    
+                                    {/* 进度条 */}
+                                    {isProcessing && (
+                                        <div className="mb-4">
+                                            <div className="flex justify-between text-sm text-gray-600 mb-1">
+                                                <span>{workflowStatus.step}</span>
+                                                <span>{Math.round(workflowStatus.progress)}%</span>
                                             </div>
-                                            <div className="code-block">
-                                                <div>Task ID: {results.textToImage.task_id}</div>
-                                                <div>Model: {results.textToImage.result.metadata.model}</div>
-                                                <div>Resolution: {results.textToImage.result.metadata.width}x{results.textToImage.result.metadata.height}</div>
-                                                <div>Inference Time: {results.textToImage.result.metadata.inference_time}s</div>
+                                            <div className="progress-bar">
+                                                <div 
+                                                    className="progress-fill"
+                                                    style={{ width: `${workflowStatus.progress}%` }}
+                                                />
                                             </div>
                                         </div>
                                     )}
                                     
-                                    {/* 图像生成视频结果 */}
-                                    {results.imageToVideo && (
-                                        <div className="result-card">
-                                            <h3 className="font-semibold mb-2">🎬 生成的视频</h3>
-                                            <div className="media-container">
-                                                <video 
-                                                    controls
-                                                    className="w-full rounded-lg"
-                                                    src={`http://localhost:8000${results.imageToVideo.result.video_url}`}
-                                                />
+                                    {/* 工作流步骤 */}
+                                    <div className="space-y-2">
+                                        {WORKFLOW_STEPS.map((step, index) => (
+                                            <div
+                                                key={step.id}
+                                                className={`workflow-step ${
+                                                    index === currentStepIndex ? 'active' :
+                                                    index < currentStepIndex ? 'completed' : ''
+                                                }`}
+                                            >
+                                                <div className={`step-icon ${
+                                                    index === currentStepIndex ? 'active' :
+                                                    index < currentStepIndex ? 'completed' : 'pending'
+                                                }`}>
+                                                    {index < currentStepIndex ? '✓' : step.icon}
+                                                </div>
+                                                <div className="flex-1">
+                                                    <div className="font-medium text-gray-800">
+                                                        {step.name}
+                                                    </div>
+                                                    {step.id === 'generate_video' && workflowStatus.currentVideoSegment > 0 && (
+                                                        <div className="text-xs text-gray-500 mt-1">
+                                                            片段 {workflowStatus.currentVideoSegment}/10
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                {index === currentStepIndex && isProcessing && (
+                                                    <div className="animate-pulse">
+                                                        <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                                                    </div>
+                                                )}
                                             </div>
-                                            <div className="code-block">
-                                                <div>Task ID: {results.imageToVideo.task_id}</div>
-                                                <div>Duration: {results.imageToVideo.result.duration}s</div>
-                                                <div>FPS: {results.imageToVideo.result.fps}</div>
-                                                <div>Frames: {results.imageToVideo.result.metadata.frames_generated}</div>
-                                            </div>
-                                        </div>
-                                    )}
+                                        ))}
+                                    </div>
                                     
-                                    {/* 视频推理音频结果 */}
-                                    {results.videoToAudio && (
-                                        <div className="result-card">
-                                            <h3 className="font-semibold mb-2">🎵 生成的音频</h3>
-                                            <div className="media-container">
-                                                <audio 
-                                                    controls
-                                                    className="w-full"
-                                                    src={`http://localhost:8000${results.videoToAudio.result.audio_url}`}
-                                                />
-                                            </div>
-                                            <div className="code-block">
-                                                <div>Task ID: {results.videoToAudio.task_id}</div>
-                                                <div>Style: {results.videoToAudio.result.style}</div>
-                                                <div>Duration: {results.videoToAudio.result.duration}s</div>
-                                                <div>Sample Rate: {results.videoToAudio.result.metadata.sample_rate}Hz</div>
-                                                <div className="mt-2">视频分析结果:</div>
-                                                <div>{JSON.stringify(results.videoToAudio.result.metadata.video_analysis, null, 2)}</div>
-                                            </div>
+                                    {/* 说明 */}
+                                    <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                                        <h3 className="font-semibold text-gray-700 mb-2">生成规格</h3>
+                                        <ul className="text-sm text-gray-600 space-y-1">
+                                            <li>• 视频总时长：40秒</li>
+                                            <li>• 视频片段：10个×4秒</li>
+                                            <li>• 音频时长：10秒（循环4次）</li>
+                                            <li>• 分辨率：1024×768</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                {/* MCP模块说明 */}
+                                <div className="mt-6 glass rounded-xl p-4 animate-fade-in">
+                                    <h3 className="text-white font-semibold mb-3">MCP模块</h3>
+                                    <div className="space-y-2 text-white/80 text-sm">
+                                        <div className="flex items-center">
+                                            <span className="w-16 font-mono">MCP1:</span>
+                                            <span>文本→图片</span>
                                         </div>
-                                    )}
-                                    
-                                    {/* 合并结果 */}
-                                    {results.mergeVideos && (
-                                        <div className="result-card">
-                                            <h3 className="font-semibold mb-2">🎞️ 最终视频</h3>
-                                            <div className="media-container">
-                                                <video 
-                                                    controls
-                                                    className="w-full rounded-lg"
-                                                    src={`http://localhost:8000${results.mergeVideos.result.output_url}`}
-                                                />
-                                            </div>
-                                            <div className="code-block">
-                                                <div>Task ID: {results.mergeVideos.task_id}</div>
-                                                <div>Total Duration: {results.mergeVideos.result.total_duration}s</div>
-                                                <div>Segments: {results.mergeVideos.result.segments_count}</div>
-                                                <div>Quality: {results.mergeVideos.result.metadata.quality}</div>
-                                                <div>Bitrate: {results.mergeVideos.result.metadata.bitrate}</div>
-                                            </div>
+                                        <div className="flex items-center">
+                                            <span className="w-16 font-mono">MCP2:</span>
+                                            <span>图片→视频(4s)</span>
                                         </div>
-                                    )}
-                                    
-                                    {/* 工作流结果 */}
-                                    {results.workflow && (
-                                        <div className="result-card">
-                                            <h3 className="font-semibold mb-2">🚀 工作流完成</h3>
-                                            <div className="media-container">
-                                                <video 
-                                                    controls
-                                                    className="w-full rounded-lg"
-                                                    src={`http://localhost:8000${results.workflow.result.final_video_url}`}
-                                                />
-                                            </div>
-                                            <div className="code-block">
-                                                <div>Workflow ID: {results.workflow.workflow_id}</div>
-                                                <div>Total Duration: {results.workflow.result.total_duration}s</div>
-                                                <div>Processing Time: {results.workflow.result.workflow_summary.total_processing_time}s</div>
-                                                <div className="mt-2">使用的模型:</div>
-                                                <div>{JSON.stringify(results.workflow.result.workflow_summary.models_used, null, 2)}</div>
-                                            </div>
+                                        <div className="flex items-center">
+                                            <span className="w-16 font-mono">MCP3:</span>
+                                            <span>图片→音频(10s)</span>
                                         </div>
-                                    )}
+                                        <div className="flex items-center">
+                                            <span className="w-16 font-mono">MCP4:</span>
+                                            <span>视频+音频合成</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    
-                    {/* API调用日志 */}
-                    <div className="mt-6 glass rounded-xl p-6">
-                        <h3 className="text-white font-semibold mb-3">API调用说明</h3>
-                        <div className="text-white/80 text-sm space-y-2">
-                            <p>✅ 前端正确调用MCP标准接口</p>
-                            <p>✅ 所有请求参数符合MCP规范</p>
-                            <p>✅ 响应数据格式已标准化</p>
-                            <p>📌 将mock_server.py替换为真实MCP即可运行</p>
                         </div>
                     </div>
                 </div>
