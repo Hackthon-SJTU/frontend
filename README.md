@@ -1,4 +1,4 @@
-# ReasoningACTION 视频生成系统 - 快速启动指南
+# ReasoningACTION Open-world 4D - 快速启动指南
 
 ## 系统架构
 ```
